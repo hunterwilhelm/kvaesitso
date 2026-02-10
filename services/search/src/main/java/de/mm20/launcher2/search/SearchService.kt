@@ -4,6 +4,8 @@ import android.util.Log
 import de.mm20.launcher2.calculator.CalculatorRepository
 import de.mm20.launcher2.data.customattrs.CustomAttributesRepository
 import de.mm20.launcher2.data.customattrs.utils.withCustomLabels
+import de.mm20.launcher2.preferences.AppSortOrder
+import de.mm20.launcher2.preferences.ui.UiSettings
 import de.mm20.launcher2.profiles.Profile
 import de.mm20.launcher2.profiles.ProfileManager
 import de.mm20.launcher2.search.data.Calculator
@@ -50,6 +52,7 @@ internal class SearchServiceImpl(
     private val searchActionService: SearchActionService,
     private val customAttributesRepository: CustomAttributesRepository,
     private val profileManager: ProfileManager,
+    private val uiSettings: UiSettings,
 ) : SearchService {
 
     override fun search(
@@ -272,7 +275,12 @@ internal class SearchServiceImpl(
     }
 
     override fun getAllApps(): Flow<AllAppsResults> {
-        return profileManager.profiles.flatMapLatest { profiles ->
+        return combine(
+            profileManager.profiles,
+            uiSettings.appSortOrder
+        ) { profiles, sortOrder ->
+            profiles to sortOrder
+        }.flatMapLatest { (profiles, sortOrder) ->
             val standardProfile = profiles.find { it.type == Profile.Type.Personal }
             val workProfile = profiles.find { it.type == Profile.Type.Work }
             val privateSpace = profiles.find { it.type == Profile.Type.Private }
@@ -306,11 +314,18 @@ internal class SearchServiceImpl(
                     }
 
                     AllAppsResults(
-                        standardProfileApps = standardProfileApps.sorted(),
-                        workProfileApps = workProfileApps.sorted(),
-                        privateSpaceApps = privateSpaceApps.sorted(),
+                        standardProfileApps = sortApps(standardProfileApps, sortOrder),
+                        workProfileApps = sortApps(workProfileApps, sortOrder),
+                        privateSpaceApps = sortApps(privateSpaceApps, sortOrder),
                     )
                 }
+        }
+    }
+
+    private fun sortApps(apps: List<Application>, sortOrder: AppSortOrder): List<Application> {
+        return when (sortOrder) {
+            AppSortOrder.AlphabeticalAsc -> apps.sorted()
+            AppSortOrder.FirstInstalledDesc -> apps.sortedByDescending { it.firstInstallTime }
         }
     }
 }

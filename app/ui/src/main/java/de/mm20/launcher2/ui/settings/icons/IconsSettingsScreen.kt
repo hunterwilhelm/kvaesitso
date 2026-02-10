@@ -46,6 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation3.runtime.NavKey
 import de.mm20.launcher2.icons.IconPack
 import de.mm20.launcher2.icons.LauncherIcon
+import de.mm20.launcher2.preferences.AppSortOrder
 import de.mm20.launcher2.preferences.IconShape
 import de.mm20.launcher2.preferences.ui.GridSettings
 import de.mm20.launcher2.ui.R
@@ -53,6 +54,7 @@ import de.mm20.launcher2.ui.component.DismissableBottomSheet
 import de.mm20.launcher2.ui.component.ShapedLauncherIcon
 import de.mm20.launcher2.ui.component.getShape
 import de.mm20.launcher2.ui.component.preferences.GuardedPreference
+import de.mm20.launcher2.ui.component.preferences.ListPreference
 import de.mm20.launcher2.ui.component.preferences.Preference
 import de.mm20.launcher2.ui.component.preferences.PreferenceCategory
 import de.mm20.launcher2.ui.component.preferences.PreferenceScreen
@@ -73,6 +75,7 @@ fun IconsSettingsScreen() {
     val icons by viewModel.icons.collectAsStateWithLifecycle(null)
     val density = LocalDensity.current
     val iconShape by viewModel.iconShape.collectAsStateWithLifecycle(IconShape.PlatformDefault)
+    val appSortOrder by viewModel.appSortOrder.collectAsStateWithLifecycle(AppSortOrder.AlphabeticalAsc)
 
     val installedIconPacks by viewModel.installedIconPacks.collectAsState(emptyList())
 
@@ -124,6 +127,15 @@ fun IconsSettingsScreen() {
                     onValueChanged = {
                         viewModel.setShowList(it)
                     }
+                )
+                ListPreference(
+                    title = stringResource(R.string.preference_app_sort_order),
+                    items = listOf(
+                        stringResource(R.string.preference_app_sort_alphabetical_asc) to AppSortOrder.AlphabeticalAsc,
+                        stringResource(R.string.preference_app_sort_first_installed_desc) to AppSortOrder.FirstInstalledDesc,
+                    ),
+                    value = appSortOrder,
+                    onValueChanged = { viewModel.setAppSortOrder(it) }
                 )
                 AnimatedVisibility(
                     grid.showList

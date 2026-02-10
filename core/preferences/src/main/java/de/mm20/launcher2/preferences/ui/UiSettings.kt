@@ -1,5 +1,6 @@
 package de.mm20.launcher2.preferences.ui
 
+import de.mm20.launcher2.preferences.AppSortOrder
 import de.mm20.launcher2.preferences.ColorScheme
 import de.mm20.launcher2.preferences.IconShape
 import de.mm20.launcher2.preferences.LauncherDataStore
@@ -79,6 +80,15 @@ class UiSettings internal constructor(
     fun setGridShowListIcons(showIcons: Boolean) {
         launcherDataStore.update {
             it.copy(gridListIcons = showIcons)
+        }
+    }
+
+    val appSortOrder
+        get() = launcherDataStore.data.map { it.appSortOrder }.distinctUntilChanged()
+
+    fun setAppSortOrder(sortOrder: AppSortOrder) {
+        launcherDataStore.update {
+            it.copy(appSortOrder = sortOrder)
         }
     }
 

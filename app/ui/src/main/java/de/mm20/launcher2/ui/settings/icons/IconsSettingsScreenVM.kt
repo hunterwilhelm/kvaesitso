@@ -13,6 +13,7 @@ import de.mm20.launcher2.icons.IconService
 import de.mm20.launcher2.icons.LauncherIcon
 import de.mm20.launcher2.permissions.PermissionGroup
 import de.mm20.launcher2.permissions.PermissionsManager
+import de.mm20.launcher2.preferences.AppSortOrder
 import de.mm20.launcher2.preferences.IconShape
 import de.mm20.launcher2.preferences.ui.BadgeSettings
 import de.mm20.launcher2.preferences.ui.IconSettings
@@ -59,6 +60,12 @@ class IconsSettingsScreenVM(
 
     fun setShowListIcons(showIcons: Boolean) {
         uiSettings.setGridShowListIcons(showIcons)
+    }
+
+    val appSortOrder = uiSettings.appSortOrder
+
+    fun setAppSortOrder(sortOrder: AppSortOrder) {
+        uiSettings.setAppSortOrder(sortOrder)
     }
 
     val iconShape = uiSettings.iconShape

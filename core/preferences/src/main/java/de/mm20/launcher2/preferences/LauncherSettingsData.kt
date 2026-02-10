@@ -66,6 +66,8 @@ data class LauncherSettingsData internal constructor(
     val favoritesFrequentlyUsedRows: Int = 1,
     val favoritesEditButton: Boolean = true,
     val favoritesCompactTags: Boolean = false,
+    val favoritesLatestButton: Boolean = false,
+    val favoritesLatestRows: Int = 2,
 
     val searchAllApps: Boolean = true,
 
@@ -105,6 +107,7 @@ data class LauncherSettingsData internal constructor(
     val gridLabels: Boolean = true,
     val gridList: Boolean = false,
     val gridListIcons: Boolean = true,
+    val appSortOrder: AppSortOrder = AppSortOrder.AlphabeticalAsc,
 
     val searchBarStyle: SearchBarStyle = SearchBarStyle.Transparent,
     val searchBarColors: SearchBarColors = SearchBarColors.Auto,
@@ -445,4 +448,10 @@ enum class MeasurementSystem {
     @SerialName("metric") Metric,
     @SerialName("uk") UnitedKingdom,
     @SerialName("us") UnitedStates,
+}
+
+@Serializable
+enum class AppSortOrder {
+    @SerialName("alphabetical_asc") AlphabeticalAsc,
+    @SerialName("first_installed_desc") FirstInstalledDesc,
 }
